@@ -11,18 +11,18 @@
             color: #ffffff;
             display: flex;
             flex-direction: column;
-            align-items: flex-start; /* Buttons links ausrichten */
+            align-items: flex-start;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            position: relative; /* Für Logo-Positionierung */
+            position: relative;
         }
 
         #logo {
             position: absolute;
             top: 20px;
             right: 20px;
-            width: 150px; /* Logo-Größe anpassen */
+            width: 150px;
         }
 
         #codeDisplay {
@@ -34,22 +34,7 @@
             color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px; /* Abstand zu Buttons */
-        }
-
-        .button {
-            background-color: #444444;
-            color: white;
-            border: none;
-            padding: 10px;
-            margin: 5px 0;
-            cursor: pointer;
-            border-radius: 5px;
-            width: 200px; /* Breite der Buttons */
-        }
-
-        .button:hover {
-            background-color: #555555;
+            margin-bottom: 20px;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
@@ -68,16 +53,12 @@
             if (window.SpeechRecognition) {
                 const recognition = new SpeechRecognition();
                 recognition.lang = 'de-DE';
-                recognition.continuous = true; // Dauerhaftes Zuhören aktivieren
-                recognition.interimResults = false; // Nur finale Ergebnisse verwenden
+                recognition.continuous = true;
+                recognition.interimResults = false;
 
                 const codeMappings = {
                     "1066": "Code 1066: Verdächtige Person.",
                     // Weitere Codes hier hinzufügen
-                };
-
-                const sendCodeToServer = (username, code) => {
-                    socket.emit('newCode', { username, code });
                 };
 
                 recognition.onresult = (event) => {
@@ -93,7 +74,7 @@
                         }, 6000);
 
                         const username = 'Benutzer1';
-                        sendCodeToServer(username, numbersOnly);
+                        socket.emit('newCode', { username, numbersOnly });
                     } else {
                         codeDisplay.textContent = `Unbekannter Code: ${transcript}`;
                         speakText(`Unbekannter Code: ${transcript}`);
@@ -129,7 +110,5 @@
 <body>
     <img id="logo" src="logo.png" alt="Logo"> <!-- Logo hier einfügen -->
     <div id="codeDisplay" role="alert" aria-live="assertive"></div>
-    <button class="button" onclick="window.location.href='seite1.html'">Öffne Seite 1</button>
-    <button class="button" onclick="window.location.href='seite2.html'">Öffne Seite 2</button>
 </body>
 </html>
