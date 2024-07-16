@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +8,8 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #1a1a1a; /* Dunkelgrauer bis schwarzer Hintergrund */
-            color: #ffffff; /* Weiße Textfarbe */
+            background-color: #2d2b36; /* Dunkelgrauer bis schwarzer Hintergrund wie Login-Seite */
+            color: #ecf0f1; /* Weiße Textfarbe */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -22,26 +22,30 @@
             font-weight: bold;
             text-align: center;
             padding: 20px;
-            background-color: #333333; /* Dunkelgrau für das Textfeld */
+            background-color: #34495e; /* Dunkelgrau für das Textfeld */
             color: #ffffff; /* Weiße Textfarbe im Textfeld */
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s; /* Smooth transition for background color */
+            transition: background-color 0.3s; /* Smooth transition für Hintergrundfarbe */
+            width: 80%;
+            max-width: 600px;
+            margin: auto;
+            margin-top: 50px; /* Abstand vom oberen Rand */
         }
 
         #codeDisplay:hover {
-            background-color: #444444; /* Etwas helleres Grau beim Überfahren mit der Maus */
+            background-color: #2c3e50; /* Etwas helleres Grau beim Überfahren mit der Maus */
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script>
-        // Text-to-Speech function
+        // Text-to-Speech Funktion
         function speakText(text) {
             const utterance = new SpeechSynthesisUtterance(text);
             window.speechSynthesis.speak(utterance);
         }
 
-        // Function to initialize speech recognition
+        // Funktion zur Initialisierung der Spracherkennung
         function initializeSpeechRecognition() {
             const socket = io();
             const codeDisplay = document.getElementById("codeDisplay");
@@ -52,7 +56,7 @@
                 const recognition = new SpeechRecognition();
 
                 recognition.lang = 'de-DE';
-                recognition.continuous = true; // Enable continuous listening
+                recognition.continuous = true; // Kontinuierliches Hören aktivieren
 
                 const codeMappings = {
                     "1": "Code 1: Tun Sie dies nach Belieben.",
@@ -72,77 +76,8 @@
                     "33": "Code 33: Mobile Notfall - diesen Funkkanal freigeben.",
                     "43": "Code 43: Taktische Einheiten im Einsatz.",
                     "99": "Code 99: Officer in Gefahr sofortige Verstärkung benötigt.",
-                    "108": "  Im Dienst/verfügbar für Aufträge.",
-                    "109": "  Wiederhole die letzte Übertragung.",
-                    "1010": "  Außer Dienst.",
-                    "1011": "  Identifiziere diese Frequenz.",
-                    "1012": "  Besucher sind anwesend (diskret vorgehen).",
-                    "1013": "  Wetter- und Straßenbedingungen mitteilen.",
-                    "1014": "  Bürger hält Verdächtigen.",
-                    "1015": "  Gefangener in Gewahrsam.",
-                    "1016": "  Gefangenen abholen.",
-                    "1017": "  Anfrage nach Benzin.",
-                    "1018": "  Geräteaustausch.",
-                    "1019": "  Zurück/zurück zur Wache.",
-                    "1020": "  Standort?",
-                    "1021": "  Telefon:",
-                    "1022": "  Letzte Anweisung ignorieren.",
-                    "1023": "  Bereitschaft.",
-                    "1024": "  Anfrage für Autokommunikation.",
-                    "1025": "  Hast du Kontakt zu _______?",
-                    "1026": "  Klar.",
-                    "1027": "  Führerscheinüberprüfung.",
-                    "1028": "  Anfrage zur Fahrzeugregistrierung.",
-                    "1029": "  Überprüfe Fahndungen/Haftbefehle [Fahrzeug] (PIN, SVS).",
-                    "1030": "  Entspricht nicht den Vorschriften.",
-                    "1032": "  Ertrinken.",
-                    "1033": "  Alarmanlage.",
-                    "1034": "  Hilfe im Büro.",
-                    "1035": "  Zeitüberprüfung.",
-                    "1036": "  Vertrauliche Informationen.",
-                    "1037": "  Operator identifizieren.",
-                    "1039": "  Kann ______ zu Funk kommen?",
-                    "1040": "  Ist ______ für einen Telefonanruf verfügbar?",
-                    "1042": "  Wohlergehen von/bei ______ überprüfen.",
-                    "1043": "  Einen Arzt rufen.",
-                    "1045": "  Wie ist der Zustand des Patienten?",
-                    "1046": "  Kranke Person [Rettungswagen ist unterwegs].",
-                    "1048": "  Rettungswagen-Transferanruf.",
-                    "1049": "  Abfahren zu/nach ______.",
-                    "1050": "  Unter dem Einfluss von Betäubungsmitteln/Bericht erstatten.",
-                    "1051": "  Die Person ist betrunken.",
-                    "1052": "  Beatmungsgerät wird benötigt.",
-                    "1053": "  Person liegt.",
-                    "1054": "  Mögliche Leiche.",
-                    "1055": "  Todesfall für den Gerichtsmediziner.",
-                    "1056": "  Selbstmord.",
-                    "1057": "  Schusswaffe abgefeuert.",
-                    "1058": "  Beschwerde über Müll.",
-                    "1059": "  Sicherheitsüberprüfung./Boshaftigkeit",
-                    "1060": "  Aussperren.",
-                    "1061": "  Verschiedene öffentliche Dienstleistungen.",
-                    "1062": "  Treffe einen Bürger.",
-                    "1063": "  Vorbereiten zum Mitschreiben.",
-                    "1064": "  Gefundenes Eigentum.",
-                    "1065": "  Vermisste Person.",
-                    "1066": "  Verdächtige Person.",
-                    "1067": "  Person ruft um Hilfe.",
-                    "1068": "  Anruf bei der Polizei per Telefon.",
-                    "1070": "  Einbrecher.",
-                    "1071": "  Schießen.",
-                    "1072": "  Messerangriff.",
-                    "1073": "  Wie ist Ihr Empfang?",
-                    "1079": "  Bombendrohung.",
-                    "1080": "  Explosion.",
-                    "1086": "  Irgendwelcher Verkehr?",
-                    "1087": "  Treffe den Beamten bei ______.",
-                    "1088": "  Treffe den Beamten/Fasse deinen Posten.",
-                    "1091": "  Tier.",
-                    "1095": "  Fußgänger/Anfrage nach einem Ausweis/Technikeinheit.",
-                    "1096": "  Aus dem Fahrzeug ausgestiegen - Fußgänger. Hilfe senden.",
-                    "1097": "  Am Einsatzort angekommen.",
-                    "1098": "  Verfügbar für Auftrag.",
-                    "1099": "  Öffne die Garagentür der Polizei."
+                    "1066": "Code 1066: Verdächtige Person.",
+                    // Weitere Code-Einträge hier hinzufügen nach Bedarf
                 };
 
                 const sendCodeToServer = (username, code) => {
@@ -164,7 +99,7 @@
                                 codeDisplay.textContent = '';
                             }, 6000);
 
-                            const username = 'Benutzer1';
+                            const username = 'Benutzer1'; // Hier den Benutzernamen entsprechend einfügen
                             sendCodeToServer(username, recognizedCode);
                         } else {
                             codeDisplay.textContent = `Unbekannter Code: ${transcript}`;
@@ -181,10 +116,10 @@
                 };
 
                 recognition.onend = () => {
-                    recognition.start(); // Restart recognition after it ends
+                    recognition.start(); // Spracherkennung nach Beendigung neu starten
                 };
 
-                recognition.start(); // Start recognition automatically
+                recognition.start(); // Start der Spracherkennung automatisch
 
                 socket.on('updateCodes', (data) => {
                     console.log('Aktualisierte Codes:', data);
@@ -194,13 +129,15 @@
             }
         }
 
-        // Initialize speech recognition when the page loads
+        // Initialisierung der Spracherkennung bei Seitenladung
         document.addEventListener('DOMContentLoaded', () => {
             initializeSpeechRecognition();
         });
     </script>
 </head>
+
 <body>
-    <div id="codeDisplay" role="alert" aria-live="assertive"></div> <!-- ARIA roles for accessibility -->
+    <div id="codeDisplay" role="alert" aria-live="assertive"></div> <!-- ARIA roles für Zugänglichkeit -->
 </body>
+
 </html>
