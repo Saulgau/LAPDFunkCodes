@@ -7,13 +7,22 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #2d2b36; /* Hintergrundfarbe */
-            color: #ecf0f1; /* Textfarbe */
+            background-color: #1a1a1a;
+            color: #ffffff;
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-start; /* Buttons links ausrichten */
             justify-content: center;
             height: 100vh;
             margin: 0;
+            position: relative; /* Für Logo-Positionierung */
+        }
+
+        #logo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 150px; /* Logo-Größe anpassen */
         }
 
         #codeDisplay {
@@ -21,17 +30,26 @@
             font-weight: bold;
             text-align: center;
             padding: 20px;
-            background-color: #34495e; /* Hintergrund für das Textfeld */
-            color: #ffffff; /* Textfarbe im Textfeld */
+            background-color: #333333;
+            color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 80%;
-            max-width: 600px;
-            margin: auto;
+            margin-bottom: 20px; /* Abstand zu Buttons */
         }
 
-        #codeDisplay:hover {
-            background-color: #2c3e50; /* Hover-Effekt */
+        .button {
+            background-color: #444444;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 200px; /* Breite der Buttons */
+        }
+
+        .button:hover {
+            background-color: #555555;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
@@ -50,16 +68,12 @@
             if (window.SpeechRecognition) {
                 const recognition = new SpeechRecognition();
                 recognition.lang = 'de-DE';
-                recognition.interimResults = false; // Nur endgültige Ergebnisse
-                recognition.continuous = true; // Kontinuierliches Hören aktivieren
+                recognition.continuous = true; // Dauerhaftes Zuhören aktivieren
+                recognition.interimResults = false; // Nur finale Ergebnisse verwenden
 
                 const codeMappings = {
-                    "1": "Code 1: Tun Sie dies nach Belieben.",
-                    "2": "Code 2: Dringend.",
-                    "3": "Code 3: Notfall/Lichter und Sirene.",
-                    "4": "Code 4: Keine weitere Hilfe erforderlich.",
-                    "6": "Code 6: Antwort von weiter Entfernung.",
                     "1066": "Code 1066: Verdächtige Person.",
+                    // Weitere Codes hier hinzufügen
                 };
 
                 const sendCodeToServer = (username, code) => {
@@ -67,29 +81,25 @@
                 };
 
                 recognition.onresult = (event) => {
-                    const transcript = event.results[0][0].transcript.trim();
+                    const transcript = event.results[0][0].transcript.trim().toLowerCase();
                     const numbersOnly = transcript.replace(/\D/g, '');
 
-                    if (numbersOnly.length > 0) {
-                        const recognizedCode = Object.keys(codeMappings).find(code => code === numbersOnly);
+                    if (numbersOnly in codeMappings) {
+                        const description = codeMappings[numbersOnly];
+                        codeDisplay.textContent = description;
+                        speakText(description);
+                        setTimeout(() => {
+                            codeDisplay.textContent = '';
+                        }, 6000);
 
-                        if (recognizedCode) {
-                            const description = codeMappings[recognizedCode];
-                            codeDisplay.textContent = description;
-                            speakText(description);
-                            setTimeout(() => {
-                                codeDisplay.textContent = '';
-                            }, 6000);
-
-                            const username = 'Benutzer1';
-                            sendCodeToServer(username, recognizedCode);
-                        } else {
-                            codeDisplay.textContent = `Unbekannter Code: ${transcript}`;
-                            speakText(`Unbekannter Code: ${transcript}`);
-                            setTimeout(() => {
-                                codeDisplay.textContent = '';
-                            }, 6000);
-                        }
+                        const username = 'Benutzer1';
+                        sendCodeToServer(username, numbersOnly);
+                    } else {
+                        codeDisplay.textContent = `Unbekannter Code: ${transcript}`;
+                        speakText(`Unbekannter Code: ${transcript}`);
+                        setTimeout(() => {
+                            codeDisplay.textContent = '';
+                        }, 6000);
                     }
                 };
 
@@ -98,10 +108,14 @@
                 };
 
                 recognition.onend = () => {
-                    recognition.start(); // Spracherkennung neu starten
+                    recognition.start(); // Startet die Spracherkennung erneut
                 };
 
                 recognition.start(); // Spracherkennung starten
+
+                socket.on('updateCodes', (data) => {
+                    console.log('Aktualisierte Codes:', data);
+                });
             } else {
                 console.error('Ihr Browser unterstützt die Spracherkennung nicht.');
             }
@@ -112,9 +126,10 @@
         });
     </script>
 </head>
-
 <body>
+    <img id="logo" src="logo.png" alt="Logo"> <!-- Logo hier einfügen -->
     <div id="codeDisplay" role="alert" aria-live="assertive"></div>
+    <button class="button" onclick="window.location.href='seite1.html'">Öffne Seite 1</button>
+    <button class="button" onclick="window.location.href='seite2.html'">Öffne Seite 2</button>
 </body>
-
 </html>
